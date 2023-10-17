@@ -6,23 +6,25 @@ from bokeh.io import output_notebook
 import numpy as np
 import food_truck_options as fto
 
-dataframe = pd.DataFrame(pd.read_excel("FoodTruck Names.xlsx")) 
-dataframe.head()
-print(dataframe["Name"][0])
+
 api_key = "AIzaSyAkau57eJydssl5tsbmTUSDaUTbH-N-JEc"
 gmaps = gm.Client(key=api_key)
 now = datetime.now()
-name = dataframe["Name"][1]
-print(type(name))
+count = 0.0
+final_selection = []
 choices = fto.find_trucks()
-print(choices)
+#print(choices)
+
+for choice in choices:
+        print(choice['formatted_address'])
+        directions_result = gmaps.directions("IUPUI",choice['formatted_address'],mode="transit",departure_time=now)
+        distance = float(directions_result[0]['legs'][0]['distance']['text'].replace(' mi', ''))
+        if distance >= 7.0 and count < 7.0:
+                if distance <= 1.0 and count < 7.0:
+                    final_selection.append(choice)
+                    count += 1.0
+
+                
 
 
-directions_result = gmaps.directions("IUPUI",name,mode="transit",departure_time=now)
 
-
-steps = directions_result[0]
-add = steps['legs']
-x = add[0]
-start_address = x['start_address']
-#print(directions_result)
