@@ -4,17 +4,25 @@ import googlemaps as gm
 import pandas as pd
 from bokeh.io import output_notebook
 import numpy as np
+import food_truck_options as fto
 
-
-dataframe = pd.read_csv('Example-Data.csv')
+dataframe = pd.DataFrame(pd.read_excel("FoodTruck Names.xlsx")) 
 dataframe.head()
-print(dataframe.loc[:,"Rating"])
+print(dataframe["Name"][0])
 api_key = "AIzaSyAkau57eJydssl5tsbmTUSDaUTbH-N-JEc"
 gmaps = gm.Client(key=api_key)
 now = datetime.now()
-directions_result = gmaps.directions("The Night Owl Food Truck","IUPUI",mode="transit",departure_time=now)
-api_url = "https://jsonplaceholder.typicode.com/todos/1"
-response = requests.get(api_url)
-response.json()
+name = dataframe["Name"][1]
+print(type(name))
+choices = fto.find_trucks()
+print(choices)
 
-print(directions_result)
+
+directions_result = gmaps.directions("IUPUI",name,mode="transit",departure_time=now)
+
+
+steps = directions_result[0]
+add = steps['legs']
+x = add[0]
+start_address = x['start_address']
+#print(directions_result)
